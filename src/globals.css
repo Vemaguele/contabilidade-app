@@ -1,0 +1,42 @@
+/* src/globals.css - Personalizando Bootstrap */
+
+/* Sobrescreva variáveis do Bootstrap */
+:root {
+  --bs-primary: #2563eb;
+  --bs-primary-rgb: 37, 99, 235;
+  --bs-success: #10b981;
+  --bs-border-radius: 12px;
+}
+
+/* Botões personalizados */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 10px 20px;
+}
+
+/* Cards personalizados */
+.card {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border-radius: 12px;
+}
+
+/* Inputs personalizados */
+.form-control {
+  border-radius: 8px;
+  padding: 10px 15px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Tabelas personalizadas */
+.table {
+  --bs-table-striped-bg: #f8fafc;
+}
+
+.table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: #64748b;
+}
