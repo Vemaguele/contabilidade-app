@@ -22,4 +22,17 @@ function App() {
   );
 }
 
+import ConfiguracoesSistemaPage from './pages/ConfiguracoesSistema';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Outras rotas existentes */}
+        <Route path="/configuracoes-sistema" element={<ConfiguracoesSistemaPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
 export default App;
