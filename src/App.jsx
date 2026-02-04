@@ -27,7 +27,7 @@ import EFaturacaoPage from './pages/EFaturacaoPage'
 import ControloGestaoPage from './pages/ControloGestaoPage'
 import ProjetosPage from './pages/ProjetosPage'
 import MobilePage from './pages/MobilePage'
-import SettingsPage from './pages/SettingsPage'
+import ConfiguracoesSistema from './pages/ConfiguracoesSistema'
 import AdminPage from './pages/AdminPage'
 import PerfilPage from './pages/PerfilPage'
 
@@ -224,12 +224,12 @@ const AppRoutes = () => {
       
       {/* ===== ROTAS DE SISTEMA ===== */}
       <Route path="/configuracoes" element={
-        <ProtectedRoute requiredPermission="Configurações">
-          <ProtectedLayout>
-            <SettingsPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
+  <ProtectedRoute requiredPermission="Configurações">
+    <ProtectedLayout>
+      <ConfiguracoesSistema />
+    </ProtectedLayout>
+  </ProtectedRoute>
+} />
       
       <Route path="/admin" element={
         <ProtectedRoute requiredLevel={1}> {/* Apenas nível 1 (Admin) */}

@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-
+import ConfiguracoesSistema from './pages/ConfiguracoesSistema'; 
 function App() {
   return (
     <div className="App">
@@ -29,7 +29,7 @@ function App() {
     <Router>
       <Routes>
         {/* Outras rotas existentes */}
-        <Route path="/configuracoes-sistema" element={<ConfiguracoesSistemaPage />} />
+        <Route path="/configuracoes" element={<ConfiguracoesSistema />} />
       </Routes>
     </Router>
   );

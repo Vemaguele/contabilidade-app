@@ -31,13 +31,17 @@ const Sidebar = () => {
 
   // Menu financeira
   const financeMenu = [
+    
     { icon: 'bi-cash-stack', label: 'Tesouraria', path: '/tesouraria', permission: 'Tesouraria' },
     { icon: 'bi-percent', label: 'IVA/Impostos', path: '/iva-impostos', permission: 'IVA/Impostos' },
     { icon: 'bi-credit-card', label: 'Folha de Pagamento', path: '/folha-pagamento', permission: 'Folha de Pagamento' },
-  ]
+    // No Sidebar.jsx, procure esta linha (cerca da linha 39) e faça:
+    { icon: 'bi-gear', label: 'Configurações', path: '/configuracoes' }, // Remova: , permission: 'Configurações'
+      ]
 
   // Menu operacional
   const operationsMenu = [
+   
     { icon: 'bi-box-seam', label: 'Stock Básico', path: '/stock', permission: 'Stock Básico' },
     { icon: 'bi-cart', label: 'Compras', path: '/compras', permission: 'Compras' },
     { icon: 'bi-graph-up', label: 'Vendas & CRM', path: '/vendas-crm', permission: 'Vendas & CRM' },
@@ -52,6 +56,7 @@ const Sidebar = () => {
     { icon: 'bi-kanban', label: 'Projetos', path: '/projetos', permission: 'Projetos' },
     { icon: 'bi-phone', label: 'Mobile Access', path: '/mobile', permission: 'Mobile Access' },
     { icon: 'bi-gear', label: 'Configurações', path: '/configuracoes', permission: 'Configurações' },
+    
   ]
 
   // Filtrar menus baseado nas permissões do usuário
