@@ -1,11 +1,14 @@
 // src/App.jsx - VERSÃO COMPLETA COM TODAS AS ROTAS
 import React from 'react'
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import { ConfigProvider } from './context/ConfigContext';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import ProtectedRoute from './auth/ProtectedRoute'
 import LoginPage from './auth/LoginPage'
 import Header from './components/layout/Header'
 import Sidebar from './components/layout/Sidebar'
+
 
 // Importe TODAS as páginas
 import DashboardPage from './pages/DashboardPage'
@@ -223,13 +226,15 @@ const AppRoutes = () => {
       } />
       
       {/* ===== ROTAS DE SISTEMA ===== */}
-      <Route path="/configuracoes" element={
-  <ProtectedRoute requiredPermission="Configurações">
-    <ProtectedLayout>
-      <ConfiguracoesSistema />
-    </ProtectedLayout>
-  </ProtectedRoute>
-} />
+      <Route 
+        path="/configuracoes" 
+        element={
+          <ProtectedRoute requiredPermission="Configurações">
+            <ProtectedLayout>
+             <ConfiguracoesSistema />
+            </ProtectedLayout>
+          </ProtectedRoute>
+      } />
       
       <Route path="/admin" element={
         <ProtectedRoute requiredLevel={1}> {/* Apenas nível 1 (Admin) */}
@@ -273,10 +278,12 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+          <ConfigProvider>
+              <AppRoutes />
+          </ConfigProvider>       
       </AuthProvider>
     </Router>
-  )
+  );
 }
 
 export default App
