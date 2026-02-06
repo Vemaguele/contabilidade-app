@@ -1,14 +1,12 @@
-// src/App.jsx - VERSÃO COMPLETA COM TODAS AS ROTAS
+// src/App.jsx - VERSÃO CORRIGIDA
 import React from 'react'
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import { ConfigProvider } from './context/ConfigContext';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
+import { ConfigProvider } from './context/ConfigContext'
 import ProtectedRoute from './auth/ProtectedRoute'
 import LoginPage from './auth/LoginPage'
 import Header from './components/layout/Header'
 import Sidebar from './components/layout/Sidebar'
-
 
 // Importe TODAS as páginas
 import DashboardPage from './pages/DashboardPage'
@@ -226,18 +224,16 @@ const AppRoutes = () => {
       } />
       
       {/* ===== ROTAS DE SISTEMA ===== */}
-      <Route 
-        path="/configuracoes" 
-        element={
-          <ProtectedRoute requiredPermission="Configurações">
-            <ProtectedLayout>
-             <ConfiguracoesSistema />
-            </ProtectedLayout>
-          </ProtectedRoute>
+      <Route path="/configuracoes" element={
+        <ProtectedRoute requiredPermission="Configurações">
+          <ProtectedLayout>
+            <ConfiguracoesSistema />
+          </ProtectedLayout>
+        </ProtectedRoute>
       } />
       
       <Route path="/admin" element={
-        <ProtectedRoute requiredLevel={1}> {/* Apenas nível 1 (Admin) */}
+        <ProtectedRoute requiredLevel={1}>
           <ProtectedLayout>
             <AdminPage />
           </ProtectedLayout>
@@ -273,17 +269,17 @@ const AppRoutes = () => {
   )
 }
 
-// App principal
+// App principal - AQUI ESTÁ A CORREÇÃO!
 function App() {
   return (
     <Router>
       <AuthProvider>
-          <ConfigProvider>
-              <AppRoutes />
-          </ConfigProvider>       
+        <ConfigProvider>
+          <AppRoutes /> {/* Apenas este componente, NADA mais aqui */}
+        </ConfigProvider>
       </AuthProvider>
     </Router>
-  );
+  )
 }
 
 export default App
