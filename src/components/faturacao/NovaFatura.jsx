@@ -119,62 +119,64 @@ const NovaFatura = () => {
         
         <div className="card-body">
           {/* Cabeçalho com dados da empresa */}
+          {/* Cabeçalho com dados da empresa */}
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="card h-100">
-                <div className="card-header bg-light">
+                <div className="card-header bg-light d-flex justify-content-between align-items-center">
                   <h6 className="mb-0">Dados da Empresa</h6>
+                  {empresa.logotipo && (
+                    <div className="logotipo-container">
+                      <img 
+                        src={empresa.logotipo} 
+                        alt="Logotipo" 
+                        className="img-fluid rounded"
+                        style={{ maxHeight: '40px' }}
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="card-body">
-                  <p className="mb-1"><strong>{empresa.nome || "Empresa Exemplo LDA"}</strong></p>
-                  <p className="mb-1">NIF: {empresa.nif || "123456789"}</p>
-                  <p className="mb-1">{empresa.endereco || "Rua das Flores, 123"}</p>
-                  <p className="mb-0">{empresa.email || "geral@empresa.pt"}</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="col-md-6">
-              <div className="card h-100">
-                <div className="card-header bg-light">
-                  <h6 className="mb-0">Dados da Fatura</h6>
-                </div>
-                <div className="card-body">
-                  <div className="mb-3">
-                    <label className="form-label">Número da Fatura</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={fatura.numero}
-                      onChange={(e) => setFatura({...fatura, numero: e.target.value})}
-                      placeholder="FAT/2024/001"
-                    />
+                  <div className="d-flex align-items-start mb-3">
+                    {empresa.logotipo && (
+                      <div className="me-3">
+                        <img 
+                          src={empresa.logotipo} 
+                          alt="Logotipo" 
+                          className="img-fluid rounded"
+                          style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <h5 className="mb-1">{empresa.nome || "Empresa Exemplo LDA"}</h5>
+                      <p className="mb-1 text-muted">
+                        <i className="bi bi-card-text me-1"></i>
+                        NIF: {empresa.nif || "123456789"}
+                      </p>
+                    </div>
                   </div>
+                  
                   <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">Data</label>
-                      <input
-                        type="date"
-                        className="form-control"
-                        value={fatura.data}
-                        onChange={(e) => setFatura({...fatura, data: e.target.value})}
-                      />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">Cliente</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={fatura.cliente}
-                        onChange={(e) => setFatura({...fatura, cliente: e.target.value})}
-                        placeholder="Nome do cliente"
-                      />
+                    <div className="col-12">
+                      <p className="mb-1">
+                        <i className="bi bi-geo-alt me-1"></i>
+                        {empresa.endereco || "Rua das Flores, 123"}
+                      </p>
+                      <p className="mb-1">
+                        <i className="bi bi-envelope me-1"></i>
+                        {empresa.email || "geral@empresa.pt"}
+                      </p>
+                      <p className="mb-0">
+                        <i className="bi bi-telephone me-1"></i>
+                        {empresa.telefone || "+351 123 456 789"}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+            </div>
 
           {/* Adicionar Itens */}
           <div className="card mb-4">

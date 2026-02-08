@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useConfig } from '../context/ConfigContext';
-
+import DashboardConfig from '../components/configuracoes/DashboardConfig'; // ← minúsculo
 // ====================== COMPONENTE PRINCIPAL ======================
 const ConfiguracoesSistema = () => {
-  const { configs } = useConfig();
-  const [activeTab, setActiveTab] = useState('empresa');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: 'speedometer2' },
     { id: 'empresa', label: 'Empresa', icon: 'building' },
     { id: 'faturacao', label: 'Faturação', icon: 'receipt' },
     { id: 'imposto', label: 'Imposto', icon: 'cash-stack' },
@@ -17,6 +17,8 @@ const ConfiguracoesSistema = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'dashboard':
+        return <DashboardConfig />;
       case 'empresa':
         return <EmpresaConfig />;
       case 'faturacao':
@@ -30,7 +32,7 @@ const ConfiguracoesSistema = () => {
       case 'contabilidade':
         return <ContabilidadeConfig />;
       default:
-        return <EmpresaConfig />;
+        return <DashboardConfig />;
     }
   };
 
@@ -102,6 +104,18 @@ const EmpresaConfig = () => {
     }
   };
 
+
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateConfig('empresa', { logotipo: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div>
       <div className="d-flex align-items-center mb-4">
@@ -114,11 +128,59 @@ const EmpresaConfig = () => {
         </div>
       </div>
 
+
+
+
+
       <div className="row">
+        {/* SEÇÃO LOGOTIPO - ADICIONADA */}
         <div className="col-md-6 mb-4">
           <div className="card h-100 border-0 shadow-sm">
             <div className="card-header bg-light">
-              <h5 className="mb-0">Dados Fiscais e Legais</h5>
+              <h5 className="mb-0">Logotipo da Empresa</h5>
+            </div>
+            <div className="card-body">
+              <div className="text-center mb-3">
+                {empresaData.logotipo ? (
+                  <div className="text-center">
+                    <img 
+                      src={empresaData.logotipo} 
+                      alt="Logotipo" 
+                      className="img-fluid rounded mb-3"
+                      style={{ maxHeight: '150px', maxWidth: '100%' }}
+                    />
+                    <button 
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => updateConfig('empresa', { logotipo: null })}
+                    >
+                      <i className="bi bi-trash me-1"></i> Remover
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border rounded p-5 text-center">
+                    <i className="bi bi-image text-muted fs-1 mb-3"></i>
+                    <p className="text-muted">Nenhum logotipo carregado</p>
+                  </div>
+                )}
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Upload de Logotipo</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                />
+                <small className="text-muted">Formatos suportados: .png, .jpg, .jpeg, .svg (max: 2MB)</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-6 mb-4">
+          <div className="card h-100 border-0 shadow-sm">
+            <div className="card-header bg-light">
+              <h5 className="mb-0">Dados Fiscais e Legais </h5>
             </div>
             <div className="card-body">
               <div className="mb-3">
