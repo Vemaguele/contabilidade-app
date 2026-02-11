@@ -1,29 +1,53 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 import './App.css';
 
 // Páginas
 import ConfiguracoesSistema from './pages/ConfiguracoesSistema';
 import PlanoContasPage from './pages/PlanoContasPage';
-import logo from './logo.svg';
 
-// Tema do Material-UI
 const theme = createTheme({
   palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-    background: {
-      default: '#f5f5f5',
-    },
+    primary: { main: '#1976d2' },
+    secondary: { main: '#dc004e' },
+    background: { default: '#f5f5f5' },
   },
 });
+
+function HomePage() {
+  const navigate = useNavigate();
+  
+  return (
+    <Box sx={{ mt: 4, textAlign: 'center' }}>
+      <Typography variant="h3" gutterBottom>
+        Sistema de Contabilidade
+      </Typography>
+      <Typography variant="h5" gutterBottom color="text.secondary">
+        Bem-vindo ao sistema
+      </Typography>
+      <Box sx={{ mt: 4 }}>
+        <Button 
+          variant="contained" 
+          size="large"
+          onClick={() => navigate('/plano-contas')}
+          sx={{ mr: 2 }}
+        >
+          Acessar Plano de Contas
+        </Button>
+        <Button 
+          variant="outlined" 
+          size="large"
+          onClick={() => navigate('/configuracoes')}
+        >
+          Configurações
+        </Button>
+      </Box>
+    </Box>
+  );
+}
 
 function App() {
   return (
@@ -31,34 +55,30 @@ function App() {
       <CssBaseline />
       <Router>
         <div className="App">
-          <Routes>
-            {/* Rota para a página inicial (React default) */}
-            <Route 
-              path="/" 
-              element={
-                <header className="App-header">
-                  <img src={logo} className="App-logo" alt="logo" />
-                  <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                  </p>
-                  <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Learn React
-                  </a>
-                </header>
-              } 
-            />
-            
-            {/* Rota para Plano de Contas */}
-            <Route path="/plano-contas" element={<PlanoContasPage />} />
-            
-            {/* Rota para Configurações do Sistema */}
-            <Route path="/configuracoes" element={<ConfiguracoesSistema />} />
-          </Routes>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                Sistema de Contabilidade
+              </Typography>
+              <Button color="inherit" component={Link} to="/">
+                Home
+              </Button>
+              <Button color="inherit" component={Link} to="/plano-contas">
+                Plano de Contas
+              </Button>
+              <Button color="inherit" component={Link} to="/configuracoes">
+                Configurações
+              </Button>
+            </Toolbar>
+          </AppBar>
+
+          <Container sx={{ mt: 4 }}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/plano-contas" element={<PlanoContasPage />} />
+              <Route path="/configuracoes" element={<ConfiguracoesSistema />} />
+            </Routes>
+          </Container>
         </div>
       </Router>
     </ThemeProvider>
