@@ -1,4 +1,3 @@
-// src/components/configuracoes/DashboardConfig.jsx
 import React, { useState } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 
@@ -35,22 +34,6 @@ const DashboardConfig = () => {
   const modulosAtivos = configs.modulos.ativos.length;
   const percentualAtivos = Math.round((modulosAtivos / totalModulos) * 100);
 
-  const configStats = {
-    faturacao: {
-      ativo: configs.faturacao.criacaoAutomatica,
-      alertas: configs.faturacao.alertasAnomalias,
-      formatos: configs.faturacao.formatos.length
-    },
-    seguranca: {
-      nivel: configs.seguranca.twoFactor ? 'Alto' : 'Médio',
-      session: configs.seguranca.sessionTimeout
-    },
-    contabilidade: {
-      automacao: configs.contabilidade.reconciliacaoAuto,
-      ia: configs.contabilidade.iaFechoContas
-    }
-  };
-
   return (
     <div>
       <div className="d-flex align-items-center mb-4">
@@ -62,29 +45,6 @@ const DashboardConfig = () => {
           <p className="text-muted mb-0">Resumo e gestão das configurações do sistema</p>
         </div>
       </div>
-
-      {/* Status */}
-      {importStatus.message && (
-        <div className={`alert alert-${importStatus.type}`}>
-          {importStatus.message}
-        </div>
-      )}
-
-      <div className="row">
-        {/* Cards de Resumo */}
-        <div className="col-md-3 mb-4">
-          <div className="card border-0 shadow-sm h-100">
-            <div className="card-body text-center">
-              <div className="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
-                <i className="bi bi-building text-primary fs-3"></i>
-              </div>
-              <h5>Empresa</h5>
-              <p className="text-muted small">{configs.empresa.nome}</p>
-              <div className="badge bg-primary">{configs.empresa.nif}</div>
-            </div>
-          </div>
-        </div>
-        </div>
 
       {/* Status de Importação */}
       {importStatus.message && (
@@ -145,7 +105,7 @@ const DashboardConfig = () => {
                 {configs.seguranca.twoFactor ? '2FA Ativo' : '2FA Inativo'}
               </p>
               <div className="badge bg-warning">
-                Nível: {configStats.seguranca.nivel}
+                Nível: {configs.seguranca.twoFactor ? 'Alto' : 'Médio'}
               </div>
             </div>
           </div>

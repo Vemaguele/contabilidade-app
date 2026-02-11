@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 
 const NovaFatura = () => {
   const { configs } = useConfig();
   const { empresa, faturacao, imposto } = configs;
+  
+  const faturaRef = useRef();
 
   const [fatura, setFatura] = useState({
     numero: `FAT/${new Date().getFullYear()}/001`,
@@ -68,9 +70,180 @@ const NovaFatura = () => {
     }));
   };
 
+  const gerarPDF = () => {
+    if (fatura.itens.length === 0) {
+      alert('Adicione itens à fatura antes de gerar PDF');
+      return;
+    }
+
+    try {
+      // Criar conteúdo HTML para impressão
+      const conteudoHTML = `
+        <html>
+          <head>
+            <title>Fatura ${fatura.numero}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+              .logo { max-height: 60px; margin-bottom: 10px; }
+              .empresa-info { margin-bottom: 20px; }
+              .invoice-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+              .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .invoice-table th { background-color: #f2f2f2; }
+              .totais { text-align: right; margin-top: 20px; }
+              .footer { margin-top: 40px; font-size: 12px; color: #666; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              ${empresa.logotipo ? `<img src="${empresa.logotipo}" class="logo" alt="Logotipo">` : ''}
+              <h1>Fatura ${fatura.numero}</h1>
+            </div>
+            
+            <div class="empresa-info">
+              <h3>${empresa.nome || "Empresa Exemplo LDA"}</h3>
+              <p>NIF: ${empresa.nif || "123456789"}</p>
+              <p>Endereço: ${empresa.endereco || "Rua das Flores, 123"}</p>
+              <p>Email: ${empresa.email || "geral@empresa.pt"}</p>
+              <p>Telefone: ${empresa.telefone || "+351 123 456 789"}</p>
+            </div>
+            
+            <div>
+              <h4>Cliente: ${fatura.cliente || "Não especificado"}</h4>
+              <p>Data: ${fatura.data}</p>
+            </div>
+            
+            <table class="invoice-table">
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Qtd</th>
+                  <th>Preço Unit.</th>
+                  <th>IVA %</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${fatura.itens.map(item => `
+                  <tr>
+                    <td>${item.descricao}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${item.precoUnitario.toFixed(2)} €</td>
+                    <td>${item.ivaAplicavel}%</td>
+                    <td>${(item.valorTotal + item.ivaValor).toFixed(2)} €</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            
+            <div class="totais">
+              <p>Subtotal: ${fatura.subtotal.toFixed(2)} €</p>
+              <p>IVA (${imposto.ivaRate}%): ${fatura.iva.toFixed(2)} €</p>
+              <p><strong>Total: ${fatura.total.toFixed(2)} €</strong></p>
+            </div>
+            
+            <div class="footer">
+              <p>Documento emitido eletronicamente</p>
+              <p>Data de emissão: ${new Date().toLocaleDateString('pt-PT')}</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      // Criar nova janela para impressão
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(conteudoHTML);
+      printWindow.document.close();
+      
+      // Aguardar carregamento e imprimir
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
+      
+      alert(`PDF ${fatura.numero} gerado com sucesso!`);
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      alert('Erro ao gerar PDF');
+    }
+  };
+
+  const gerarXML = () => {
+    if (fatura.itens.length === 0) {
+      alert('Adicione itens à fatura antes de gerar XML');
+      return;
+    }
+
+    try {
+      // Estrutura XML básica
+      const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<Invoice>
+  <InvoiceNumber>${fatura.numero}</InvoiceNumber>
+  <InvoiceDate>${fatura.data}</InvoiceDate>
+  <InvoiceStatus>${fatura.status}</InvoiceStatus>
+  <Supplier>
+    <Name>${empresa.nome || 'Empresa Exemplo LDA'}</Name>
+    <TaxID>${empresa.nif || '123456789'}</TaxID>
+    <Address>${empresa.endereco || 'Rua das Flores, 123'}</Address>
+    <Email>${empresa.email || 'geral@empresa.pt'}</Email>
+    <Phone>${empresa.telefone || '+351 123 456 789'}</Phone>
+  </Supplier>
+  <Customer>
+    <Name>${fatura.cliente || 'Cliente não especificado'}</Name>
+  </Customer>
+  <InvoiceLines>
+    ${fatura.itens.map((item, index) => `
+    <InvoiceLine>
+      <LineNumber>${index + 1}</LineNumber>
+      <Description>${item.descricao}</Description>
+      <Quantity>${item.quantidade}</Quantity>
+      <UnitPrice>${item.precoUnitario.toFixed(2)}</UnitPrice>
+      <Tax>
+        <TaxType>VAT</TaxType>
+        <TaxRate>${item.ivaAplicavel}%</TaxRate>
+        <TaxAmount>${item.ivaValor.toFixed(2)}</TaxAmount>
+      </Tax>
+      <LineTotal>${(item.valorTotal + item.ivaValor).toFixed(2)}</LineTotal>
+    </InvoiceLine>
+    `).join('')}
+  </InvoiceLines>
+  <InvoiceTotals>
+    <Subtotal>${fatura.subtotal.toFixed(2)}</Subtotal>
+    <TaxTotal>${fatura.iva.toFixed(2)}</TaxTotal>
+    <PayableAmount>${fatura.total.toFixed(2)}</PayableAmount>
+  </InvoiceTotals>
+  <InvoiceData>
+    <CreatedAt>${new Date().toISOString()}</CreatedAt>
+    <Currency>EUR</Currency>
+  </InvoiceData>
+</Invoice>`;
+
+      // Criar arquivo para download
+      const blob = new Blob([xmlContent], { type: 'application/xml' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `fatura_${fatura.numero.replace(/\//g, '_')}.xml`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert(`XML ${fatura.numero} gerado com sucesso!`);
+    } catch (error) {
+      console.error('Erro ao gerar XML:', error);
+      alert('Erro ao gerar XML');
+    }
+  };
+
   const gerarFatura = () => {
     if (fatura.itens.length === 0) {
       alert('Adicione pelo menos um item à fatura');
+      return;
+    }
+
+    if (!fatura.cliente.trim()) {
+      alert('Por favor, insira o nome do cliente');
       return;
     }
 
@@ -81,17 +254,24 @@ const NovaFatura = () => {
         nif: empresa.nif,
         endereco: empresa.endereco,
         email: empresa.email,
-        telefone: empresa.telefone
+        telefone: empresa.telefone,
+        logotipo: empresa.logotipo
       },
       configAplicada: {
         ivaRate: imposto.ivaRate,
         formatos: faturacao.formatos,
         fluxoAprovacao: faturacao.fluxoAprovacao
       },
-      dataCriacao: new Date().toISOString()
+      dataCriacao: new Date().toISOString(),
+      id: `fat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     };
 
-    console.log('Fatura gerada:', faturaCompleta);
+    // Salvar no localStorage
+    const faturasSalvas = JSON.parse(localStorage.getItem('faturas') || '[]');
+    faturasSalvas.push(faturaCompleta);
+    localStorage.setItem('faturas', JSON.stringify(faturasSalvas));
+    
+    console.log('Fatura salva:', faturaCompleta);
     alert(`Fatura ${fatura.numero} criada com sucesso!`);
     
     // Resetar formulário
@@ -109,7 +289,7 @@ const NovaFatura = () => {
 
   return (
     <div className="container-fluid p-0">
-      <div className="card shadow-lg">
+      <div className="card shadow-lg" ref={faturaRef}>
         <div className="card-header bg-primary text-white">
           <h4 className="mb-0">
             <i className="bi bi-file-earmark-plus me-2"></i>
@@ -118,7 +298,6 @@ const NovaFatura = () => {
         </div>
         
         <div className="card-body">
-          {/* Cabeçalho com dados da empresa */}
           {/* Cabeçalho com dados da empresa */}
           <div className="row mb-4">
             <div className="col-md-6">
@@ -176,7 +355,48 @@ const NovaFatura = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Dados do Cliente */}
+            <div className="col-md-6">
+              <div className="card h-100">
+                <div className="card-header bg-light">
+                  <h6 className="mb-0">Dados do Cliente</h6>
+                </div>
+                <div className="card-body">
+                  <div className="mb-3">
+                    <label className="form-label">Nome do Cliente *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={fatura.cliente}
+                      onChange={(e) => setFatura({...fatura, cliente: e.target.value})}
+                      placeholder="Nome do cliente"
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label className="form-label">Número da Fatura</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={fatura.numero}
+                        onChange={(e) => setFatura({...fatura, numero: e.target.value})}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">Data</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={fatura.data}
+                        onChange={(e) => setFatura({...fatura, data: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
 
           {/* Adicionar Itens */}
           <div className="card mb-4">
@@ -383,7 +603,7 @@ const NovaFatura = () => {
             <button 
               className="btn btn-primary" 
               onClick={gerarFatura}
-              disabled={fatura.itens.length === 0}
+              disabled={fatura.itens.length === 0 || !fatura.cliente.trim()}
             >
               <i className="bi bi-check-circle me-2"></i>
               Criar Fatura
@@ -392,7 +612,9 @@ const NovaFatura = () => {
             {faturacao.formatos.includes('pdf') && (
               <button 
                 className="btn btn-success"
+                onClick={gerarPDF}
                 disabled={fatura.itens.length === 0}
+                title="Gerar documento PDF"
               >
                 <i className="bi bi-file-earmark-pdf me-2"></i>
                 Gerar PDF
@@ -402,7 +624,9 @@ const NovaFatura = () => {
             {faturacao.formatos.includes('xml') && (
               <button 
                 className="btn btn-warning"
+                onClick={gerarXML}
                 disabled={fatura.itens.length === 0}
+                title="Gerar arquivo XML para integração"
               >
                 <i className="bi bi-code me-2"></i>
                 Gerar XML

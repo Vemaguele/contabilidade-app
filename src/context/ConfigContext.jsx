@@ -1,4 +1,3 @@
-// src/context/ConfigContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const ConfigContext = createContext();
@@ -20,7 +19,7 @@ export const ConfigProvider = ({ children }) => {
       anoFiscal: new Date().getFullYear(),
       periodoFiscal: 'mensal',
       certificadoDigital: null,
-      logotipo: null, // Novo campo
+      logotipo: null,
     },
     faturacao: {
       criacaoAutomatica: true,
@@ -69,12 +68,11 @@ export const ConfigProvider = ({ children }) => {
   useEffect(() => {
     const savedConfigs = localStorage.getItem('app_configs');
     if (savedConfigs) {
-      const parsedConfigs = JSON.parse(savedConfigs);
-      // Manter logotipo como base64 se existir
-      if (parsedConfigs.empresa?.logotipo?.includes('base64')) {
+      try {
+        const parsedConfigs = JSON.parse(savedConfigs);
         setConfigs(parsedConfigs);
-      } else {
-        setConfigs(parsedConfigs);
+      } catch (error) {
+        console.error('Erro ao carregar configurações:', error);
       }
     }
   }, []);
@@ -91,7 +89,19 @@ export const ConfigProvider = ({ children }) => {
     }));
   };
 
-  // Funções para exportar/importar
+  // Função para fazer upload do logotipo
+  const uploadLogotipo = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateConfig('empresa', { logotipo: reader.result });
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const exportConfigs = () => {
     const dataStr = JSON.stringify(configs, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
@@ -124,6 +134,7 @@ export const ConfigProvider = ({ children }) => {
     <ConfigContext.Provider value={{ 
       configs, 
       updateConfig,
+      uploadLogotipo,
       exportConfigs,
       importConfigs
     }}>

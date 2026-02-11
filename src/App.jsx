@@ -1,36 +1,21 @@
-// src/App.jsx - VERSÃO CORRIGIDA
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './auth/AuthContext'
-import { ConfigProvider } from './context/ConfigContext'
-import ProtectedRoute from './auth/ProtectedRoute'
-import LoginPage from './auth/LoginPage'
-import Header from './components/layout/Header'
-import Sidebar from './components/layout/Sidebar'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './auth/AuthContext';
+import { ConfigProvider } from './context/ConfigContext';
+import ProtectedRoute from './auth/ProtectedRoute';
+import LoginPage from './auth/LoginPage';
+import Header from './components/layout/Header';
+import Sidebar from './components/layout/Sidebar';
 
-// Importe TODAS as páginas
-import DashboardPage from './pages/DashboardPage'
-import InvoicesPage from './pages/InvoicesPage'
-import AccountingPage from './pages/AccountingPage'
-import ClientsPage from './pages/ClientsPage'
-import SuppliersPage from './pages/SuppliersPage'
-import ReportsPage from './pages/ReportsPage'
-import BanksPage from './pages/BanksPage'
-import TesourariaPage from './pages/TesourariaPage'
-import IvaImpostosPage from './pages/IvaImpostosPage'
-import FolhaPagamentoPage from './pages/FolhaPagamentoPage'
-import StockPage from './pages/StockPage'
-import ComprasPage from './pages/ComprasPage'
-import VendasCrmPage from './pages/VendasCrmPage'
-import ImobilizadoPage from './pages/ImobilizadoPage'
-import DocumentosPage from './pages/DocumentosPage'
-import EFaturacaoPage from './pages/EFaturacaoPage'
-import ControloGestaoPage from './pages/ControloGestaoPage'
-import ProjetosPage from './pages/ProjetosPage'
-import MobilePage from './pages/MobilePage'
-import ConfiguracoesSistema from './pages/ConfiguracoesSistema'
-import AdminPage from './pages/AdminPage'
-import PerfilPage from './pages/PerfilPage'
+// Importe as páginas principais
+import DashboardPage from './pages/DashboardPage';
+import InvoicesPage from './pages/InvoicesPage';
+import AccountingPage from './pages/AccountingPage';
+import ClientsPage from './pages/ClientsPage';
+import SuppliersPage from './pages/SuppliersPage';
+import ConfiguracoesSistema from './pages/ConfiguracoesSistema';
+import AdminPage from './pages/AdminPage';
+import PerfilPage from './pages/PerfilPage';
 
 // Layout padrão para páginas protegidas
 const ProtectedLayout = ({ children }) => {
@@ -48,8 +33,8 @@ const ProtectedLayout = ({ children }) => {
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Componente principal das rotas
 const AppRoutes = () => {
@@ -61,15 +46,13 @@ const AppRoutes = () => {
       {/* Rota raiz - Redireciona para dashboard se autenticado */}
       <Route path="/" element={
         <ProtectedRoute>
-          <ProtectedLayout>
-            <DashboardPage />
-          </ProtectedLayout>
+          <Navigate to="/dashboard" replace />
         </ProtectedRoute>
       } />
       
-      {/* ===== ROTAS PRINCIPAIS ===== */}
+      {/* ROTAS PRINCIPAIS */}
       <Route path="/dashboard" element={
-        <ProtectedRoute requiredPermission="Dashboard">
+        <ProtectedRoute>
           <ProtectedLayout>
             <DashboardPage />
           </ProtectedLayout>
@@ -77,7 +60,7 @@ const AppRoutes = () => {
       } />
       
       <Route path="/faturacao" element={
-        <ProtectedRoute requiredPermission="Faturação">
+        <ProtectedRoute>
           <ProtectedLayout>
             <InvoicesPage />
           </ProtectedLayout>
@@ -85,7 +68,7 @@ const AppRoutes = () => {
       } />
       
       <Route path="/contabilidade" element={
-        <ProtectedRoute requiredPermission="Contabilidade">
+        <ProtectedRoute>
           <ProtectedLayout>
             <AccountingPage />
           </ProtectedLayout>
@@ -93,7 +76,7 @@ const AppRoutes = () => {
       } />
       
       <Route path="/clientes" element={
-        <ProtectedRoute requiredPermission="Clientes">
+        <ProtectedRoute>
           <ProtectedLayout>
             <ClientsPage />
           </ProtectedLayout>
@@ -101,131 +84,15 @@ const AppRoutes = () => {
       } />
       
       <Route path="/fornecedores" element={
-        <ProtectedRoute requiredPermission="Fornecedores">
+        <ProtectedRoute>
           <ProtectedLayout>
             <SuppliersPage />
           </ProtectedLayout>
         </ProtectedRoute>
       } />
       
-      <Route path="/relatorios" element={
-        <ProtectedRoute requiredPermission="Relatórios">
-          <ProtectedLayout>
-            <ReportsPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/bancos" element={
-        <ProtectedRoute requiredPermission="Bancos">
-          <ProtectedLayout>
-            <BanksPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      {/* ===== ROTAS FINANCEIRAS ===== */}
-      <Route path="/tesouraria" element={
-        <ProtectedRoute requiredPermission="Tesouraria">
-          <ProtectedLayout>
-            <TesourariaPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/iva-impostos" element={
-        <ProtectedRoute requiredPermission="IVA/Impostos">
-          <ProtectedLayout>
-            <IvaImpostosPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/folha-pagamento" element={
-        <ProtectedRoute requiredPermission="Folha de Pagamento">
-          <ProtectedLayout>
-            <FolhaPagamentoPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      {/* ===== ROTAS OPERACIONAIS ===== */}
-      <Route path="/stock" element={
-        <ProtectedRoute requiredPermission="Stock Básico">
-          <ProtectedLayout>
-            <StockPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/compras" element={
-        <ProtectedRoute requiredPermission="Compras">
-          <ProtectedLayout>
-            <ComprasPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/vendas-crm" element={
-        <ProtectedRoute requiredPermission="Vendas & CRM">
-          <ProtectedLayout>
-            <VendasCrmPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/imobilizado" element={
-        <ProtectedRoute requiredPermission="Imobilizado">
-          <ProtectedLayout>
-            <ImobilizadoPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      {/* ===== ROTAS DE GESTÃO ===== */}
-      <Route path="/documentos" element={
-        <ProtectedRoute requiredPermission="Document Management">
-          <ProtectedLayout>
-            <DocumentosPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/e-faturacao" element={
-        <ProtectedRoute requiredPermission="E-faturação">
-          <ProtectedLayout>
-            <EFaturacaoPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/controlo-gestao" element={
-        <ProtectedRoute requiredPermission="Controlo de Gestão">
-          <ProtectedLayout>
-            <ControloGestaoPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/projetos" element={
-        <ProtectedRoute requiredPermission="Projetos">
-          <ProtectedLayout>
-            <ProjetosPage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/mobile" element={
-        <ProtectedRoute requiredPermission="Mobile Access">
-          <ProtectedLayout>
-            <MobilePage />
-          </ProtectedLayout>
-        </ProtectedRoute>
-      } />
-      
-      {/* ===== ROTAS DE SISTEMA ===== */}
       <Route path="/configuracoes" element={
-        <ProtectedRoute requiredPermission="Configurações">
+        <ProtectedRoute>
           <ProtectedLayout>
             <ConfiguracoesSistema />
           </ProtectedLayout>
@@ -266,20 +133,20 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
     </Routes>
-  )
-}
+  );
+};
 
-// App principal - AQUI ESTÁ A CORREÇÃO!
+// App principal
 function App() {
   return (
     <Router>
       <AuthProvider>
         <ConfigProvider>
-          <AppRoutes /> {/* Apenas este componente, NADA mais aqui */}
+          <AppRoutes />
         </ConfigProvider>
       </AuthProvider>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
