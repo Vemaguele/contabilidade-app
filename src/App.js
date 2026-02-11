@@ -1,8 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import SettingsIcon from '@mui/icons-material/Settings';
 import './App.css';
 
 // Páginas
@@ -18,8 +21,6 @@ const theme = createTheme({
 });
 
 function HomePage() {
-  const navigate = useNavigate();
-  
   return (
     <Box sx={{ mt: 4, textAlign: 'center' }}>
       <Typography variant="h3" gutterBottom>
@@ -32,15 +33,19 @@ function HomePage() {
         <Button 
           variant="contained" 
           size="large"
-          onClick={() => navigate('/plano-contas')}
+          component={Link}
+          to="/plano-contas"
           sx={{ mr: 2 }}
+          startIcon={<AccountTreeIcon />}
         >
           Acessar Plano de Contas
         </Button>
         <Button 
           variant="outlined" 
           size="large"
-          onClick={() => navigate('/configuracoes')}
+          component={Link}
+          to="/configuracoes"
+          startIcon={<SettingsIcon />}
         >
           Configurações
         </Button>
@@ -53,21 +58,26 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
+      <Router
+            future={{
+             v7_startTransition: true,
+             v7_relativeSplatPath: true,
+      }}>
+
         <div className="App">
           <AppBar position="static">
             <Toolbar>
               <Typography variant="h6" sx={{ flexGrow: 1 }}>
                 Sistema de Contabilidade
               </Typography>
-              <Button color="inherit" component={Link} to="/">
-                Home
+              <Button color="inherit" component={Link} to="/" startIcon={<HomeIcon />}>
+                 Home
               </Button>
-              <Button color="inherit" component={Link} to="/plano-contas">
-                Plano de Contas
+              <Button color="inherit" component={Link} to="/plano-contas" startIcon={<AccountTreeIcon />}>
+               Plano de Contas
               </Button>
-              <Button color="inherit" component={Link} to="/configuracoes">
-                Configurações
+              <Button color="inherit" component={Link} to="/configuracoes" startIcon={<SettingsIcon />}>
+               Configurações
               </Button>
             </Toolbar>
           </AppBar>
